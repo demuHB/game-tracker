@@ -6,7 +6,7 @@ from datetime import datetime
 import customtkinter as ctk
 
 from ..trophies import (IGNORE, OTHER_LANGUAGE, PLACEHOLDER, PLATFORM_NAMES, UNRATED, award_label,
-                        stored_platform)
+                        psnprofiles_url, stored_platform)
 from ..models import has_achievements, title
 from . import theme
 from .widgets import ScrollFrame, BaseWindow, ConfirmDialog, add_context_menu, chip_row, countdown_info, Pill
@@ -88,7 +88,11 @@ class EditDialog(BaseWindow):
         self.check_btn.pack(side='left')
         self.wrong_btn = ctk.CTkButton(row, text="Falscher Treffer", width=120, command=self.ignore_match, **small)
         self.wrong_btn.pack(side='left', padx=(6, 0))
-        self.open_btn = ctk.CTkButton(row, text="↗", width=32, command=self.open_exophase, **small)
+        links = ctk.CTkFrame(box, fg_color='transparent')
+        links.pack(fill='x', pady=(6, 0))
+        self.psnp_btn = ctk.CTkButton(links, text="PSNProfiles ↗", width=120, command=self.open_psnprofiles, **small)
+        self.psnp_btn.pack(side='left')
+        self.open_btn = ctk.CTkButton(links, text="Exophase ↗", width=100, command=self.open_exophase, **small)
         self.open_btn.pack(side='left', padx=(6, 0))
         self._update_trophy_status()
 
@@ -155,6 +159,7 @@ class EditDialog(BaseWindow):
         self.check_btn.configure(state='normal' if has_achievements(self.game) else 'disabled')
         self.wrong_btn.configure(state='normal' if has_match else 'disabled')
         self.open_btn.configure(state='normal' if has_match and self._trophy_value('exophase_url') else 'disabled')
+        self.psnp_btn.configure(state='normal' if has_achievements(self.game) else 'disabled')
 
     def check_trophies(self):
         self.check_btn.configure(state='disabled')
@@ -198,6 +203,9 @@ class EditDialog(BaseWindow):
                               'exophase_platform': '', 'exophase_quality': UNRATED, 'exophase_language': '',
                               'psn_trophy_count': 0}
         self._update_trophy_status()
+
+    def open_psnprofiles(self):
+        webbrowser.open(psnprofiles_url(self.game))
 
     def open_exophase(self):
         url = self._trophy_value('exophase_url')

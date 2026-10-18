@@ -16,6 +16,7 @@ import logging
 import time
 import unicodedata
 from difflib import SequenceMatcher
+from urllib.parse import quote_plus
 
 import requests
 
@@ -118,6 +119,12 @@ def award_label(platform, count):
     if platform in ('', 'psn'):
         return f"{count} {'Trophäe' if count == 1 else 'Trophäen'}"
     return f"{count} {'Erfolg' if count == 1 else 'Erfolge'} ({PLATFORM_NAMES.get(platform, platform)})"
+
+
+def psnprofiles_url(game):
+    """Suche nach dem Spiel auf PSNProfiles – wird nur im Browser der User geöffnet, nie automatisch abgefragt
+    (PSNProfiles blockt automatische Abrufe per Cloudflare)."""
+    return f"https://psnprofiles.com/search/games?q={quote_plus(title(game))}"
 
 
 def stored_platform(game):

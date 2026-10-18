@@ -61,6 +61,9 @@ Vor Release sind Listen oft vorläufig (Platzhalter-Namen oder nur Japanisch o.�
 Trophäennamen und wählt die beste Liste – zuerst nach Sprache (Deutsch > Englisch > andere Sprache > Platzhalter),
 dann nach Plattform. Wird eine Liste brauchbar, kommt eine zweite Meldung („Trophäen jetzt auf Englisch“).
 Vorläufige Listen haben ein blasses 🏆. Hinweis: Exophase zeigt Listen fast immer auf Englisch.
+Ein Klick auf 🏆 öffnet die Suche auf **PSNProfiles** im Browser; im Bearbeiten-Dialog gibt es zusätzlich
+„Exophase ↗“. PSNProfiles selbst kann die App nicht automatisch abfragen – die Seite blockt automatische Abrufe
+per Cloudflare.
 Im Bearbeiten-Dialog: **Jetzt prüfen**, **Falscher Treffer** (ignoriert den Treffer), **↗** öffnet die Liste auf Exophase.
 
 ## Entwicklung
