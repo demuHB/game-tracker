@@ -241,7 +241,10 @@ class GameList(SmoothWheel, tkinter.Frame):
             url = game.get('exophase_url')
             link_tag = f'link:{uid}'
             badge_x = self._badge(badge_x, top, f"🏆 {game['psn_trophy_count']}",
-                                  (tag, link_tag) if url else (tag,), (TROPHY_BG, TROPHY_BG_HOVER, theme.TROPHY),
+                                  (tag, link_tag) if url else (tag,),
+                                  # vorläufige Liste (Platzhalter/andere Sprache): blasser
+                                  (TROPHY_BG, TROPHY_BG_HOVER,
+                                   theme.SUBTLE if game.get('exophase_quality') in (0, 1) else theme.TROPHY),
                                   (lambda u=url: self.on_link(u)) if url else None, link_tag)
         days = days_until(game.get('release_date'))
         if (self.on_archive and not game.get('archived') and not is_tba(game)

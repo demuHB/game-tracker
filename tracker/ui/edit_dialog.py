@@ -5,7 +5,8 @@ from datetime import datetime
 
 import customtkinter as ctk
 
-from ..trophies import IGNORE, PLATFORM_NAMES, award_label, stored_platform
+from ..trophies import (IGNORE, OTHER_LANGUAGE, PLACEHOLDER, PLATFORM_NAMES, UNRATED, award_label,
+                        stored_platform)
 from ..models import has_achievements, title
 from . import theme
 from .widgets import ScrollFrame, BaseWindow, ConfirmDialog, add_context_menu, chip_row, countdown_info, Pill
@@ -141,9 +142,12 @@ class EditDialog(BaseWindow):
             text, color = "Treffer ignoriert – „Jetzt prüfen“ sucht neu", theme.SUBTLE
         elif exo_id:
             platform = self._trophy_value('exophase_platform') or stored_platform(self.game)
-            text = (f"🏆 {award_label(platform, self._trophy_value('psn_trophy_count'))}\n"
+            language = self._trophy_value('exophase_language')
+            text = (f"🏆 {award_label(platform, self._trophy_value('psn_trophy_count'))}"
+                    f"{f' · {language}' if language else ''}\n"
                     f"{PLATFORM_NAMES.get(platform, 'Exophase')}: {self._trophy_value('exophase_title')}")
-            color = theme.TROPHY
+            preliminary = (self._trophy_value('exophase_quality') or 0) in (PLACEHOLDER, OTHER_LANGUAGE)
+            color = theme.MUTED if preliminary else theme.TROPHY
         else:
             text, color = "Noch keine Trophäenliste – wird täglich geprüft", theme.MUTED
         self.trophy_status.configure(text=text, text_color=color)
@@ -155,16 +159,16 @@ class EditDialog(BaseWindow):
     def check_trophies(self):
         self.check_btn.configure(state='disabled')
         self._update_trophy_status(("Suche auf Exophase…", theme.MUTED))
-        game = {**self.game, 'exophase_id': '', 'exophase_platform': ''}
+        game = {**self.game, 'exophase_id': '', 'exophase_platform': '', 'exophase_quality': UNRATED}
 
         def work():
             try:
-                entry, platform = self.app.trophies.find(game)
-                self.app.call(done, entry, platform, None)
+                entry, platform, quality, language = self.app.trophies.find(game)
+                self.app.call(done, entry, platform, quality, language, None)
             except Exception as e:
-                self.app.call(done, None, None, e)
+                self.app.call(done, None, None, UNRATED, '', e)
 
-        def done(entry, platform, error):
+        def done(entry, platform, quality, language, error):
             if not self.winfo_exists():
                 return
             if error:
@@ -175,12 +179,15 @@ class EditDialog(BaseWindow):
                     'exophase_title': entry.get('title', ''),
                     'exophase_url': entry.get('endpoint_awards', ''),
                     'exophase_platform': platform,
+                    'exophase_quality': quality,
+                    'exophase_language': language,
                     'psn_trophy_count': int(entry.get('total_awards') or 0),
                 }
                 self._update_trophy_status()
             else:
                 self.trophy_fields = {'exophase_id': '', 'exophase_title': '', 'exophase_url': '',
-                                      'exophase_platform': '', 'psn_trophy_count': 0}
+                                      'exophase_platform': '', 'exophase_quality': UNRATED,
+                                      'exophase_language': '', 'psn_trophy_count': 0}
                 self._update_trophy_status(("Noch keine Trophäenliste gefunden", theme.MUTED))
             self.check_btn.configure(state='normal')
 
@@ -188,7 +195,8 @@ class EditDialog(BaseWindow):
 
     def ignore_match(self):
         self.trophy_fields = {'exophase_id': IGNORE, 'exophase_title': '', 'exophase_url': '',
-                              'exophase_platform': '', 'psn_trophy_count': 0}
+                              'exophase_platform': '', 'exophase_quality': UNRATED, 'exophase_language': '',
+                              'psn_trophy_count': 0}
         self._update_trophy_status()
 
     def open_exophase(self):

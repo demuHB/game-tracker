@@ -57,6 +57,10 @@ PlayStation-Liste, sonst die Steam- und dann die Xbox-Liste (die Erfolge sind bi
 tauchen oft früher auf). Exophase entdeckt neue Listen meist schon vor Release. Du wirst benachrichtigt,
 wenn eine Liste erstmals auftaucht, wenn später die PlayStation-Liste dazukommt oder wenn Trophäen
 dazukommen (DLC). Kein Token nötig.
+Vor Release sind Listen oft vorläufig (Platzhalter-Namen oder nur Japanisch o.Ä.). Die App liest dafür die
+Trophäennamen und wählt die beste Liste – zuerst nach Sprache (Deutsch > Englisch > andere Sprache > Platzhalter),
+dann nach Plattform. Wird eine Liste brauchbar, kommt eine zweite Meldung („Trophäen jetzt auf Englisch“).
+Vorläufige Listen haben ein blasses 🏆. Hinweis: Exophase zeigt Listen fast immer auf Englisch.
 Im Bearbeiten-Dialog: **Jetzt prüfen**, **Falscher Treffer** (ignoriert den Treffer), **↗** öffnet die Liste auf Exophase.
 
 ## Entwicklung
