@@ -22,6 +22,7 @@ GAME_DEFAULTS = {
     'exophase_platform': '',   # psn / steam / xbox
     'exophase_quality': -1,    # Sprachstufe der Liste: -1 unbewertet, 0 Platzhalter, 1 andere Sprache, 2 Englisch, 3 Deutsch
     'exophase_language': '',
+    'psnprofiles_link': '',    # von Hand hinterlegter PSNProfiles-Link – hat Vorrang vor Exophase
     'archived': False,         # im Archiv: nicht mehr in der Hauptliste, Trophäen werden weiter geprüft
     'archived_at': '',
 }

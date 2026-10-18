@@ -15,7 +15,7 @@ from collections import Counter
 
 from ..models import days_between, days_until, is_tba, platform_list, release_year, short_platform, title
 from . import theme
-from ..trophies import psnprofiles_url
+from ..trophies import trophy_link
 from .widgets import SmoothWheel, countdown_info
 
 COVER = (46, 62)          # logische Pixel
@@ -238,10 +238,11 @@ class GameList(SmoothWheel, tkinter.Frame):
             self.pill(badge_x, top + self.px(1), "TBA", (theme.BORDER, theme.MUTED), badge_font, (tag,),
                       pad_x=7, height=20)
             badge_x -= self.px(4)
-        if game.get('psn_trophy_count'):
-            url = psnprofiles_url(game)   # Klick öffnet PSNProfiles im Browser (Erkennung kommt von Exophase)
+        if game.get('psn_trophy_count') or game.get('psnprofiles_link'):
+            url = trophy_link(game)   # hinterlegter PSNProfiles-Link, sonst die Exophase-Liste
             link_tag = f'link:{uid}'
-            badge_x = self._badge(badge_x, top, f"🏆 {game['psn_trophy_count']}",
+            count = game.get('psn_trophy_count')
+            badge_x = self._badge(badge_x, top, f"🏆 {count}" if count else "🏆",
                                   (tag, link_tag) if url else (tag,),
                                   # vorläufige Liste (Platzhalter/andere Sprache): blasser
                                   (TROPHY_BG, TROPHY_BG_HOVER,

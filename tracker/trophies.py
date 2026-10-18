@@ -122,9 +122,18 @@ def award_label(platform, count):
 
 
 def psnprofiles_url(game):
-    """Suche nach dem Spiel auf PSNProfiles – wird nur im Browser der User geöffnet, nie automatisch abgefragt
-    (PSNProfiles blockt automatische Abrufe per Cloudflare)."""
-    return f"https://psnprofiles.com/search/games?q={quote_plus(title(game))}"
+    """Hinterlegter PSNProfiles-Link oder die Suche nach dem Spiel – wird nur im Browser der User geöffnet, nie
+    automatisch abgefragt (PSNProfiles blockt automatische Abrufe per Cloudflare)."""
+    return game.get('psnprofiles_link') or f"https://psnprofiles.com/search/games?q={quote_plus(title(game))}"
+
+
+def trophy_link(game):
+    """Ziel des 🏆-Abzeichens: von Hand hinterlegter PSNProfiles-Link, sonst die gefundene Exophase-Liste."""
+    return game.get('psnprofiles_link') or game.get('exophase_url') or ''
+
+
+def is_psnprofiles_link(url):
+    return url.startswith(('https://psnprofiles.com/', 'http://psnprofiles.com/', 'https://www.psnprofiles.com/'))
 
 
 def stored_platform(game):

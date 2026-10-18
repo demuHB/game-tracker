@@ -6,7 +6,7 @@ from datetime import datetime
 import customtkinter as ctk
 
 from ..trophies import (IGNORE, OTHER_LANGUAGE, PLACEHOLDER, PLATFORM_NAMES, UNRATED, award_label,
-                        psnprofiles_url, stored_platform)
+                        is_psnprofiles_link, psnprofiles_url, stored_platform)
 from ..models import has_achievements, title
 from . import theme
 from .widgets import ScrollFrame, BaseWindow, ConfirmDialog, add_context_menu, chip_row, countdown_info, Pill
@@ -90,10 +90,19 @@ class EditDialog(BaseWindow):
         self.wrong_btn.pack(side='left', padx=(6, 0))
         links = ctk.CTkFrame(box, fg_color='transparent')
         links.pack(fill='x', pady=(6, 0))
-        self.psnp_btn = ctk.CTkButton(links, text="PSNProfiles ↗", width=120, command=self.open_psnprofiles, **small)
-        self.psnp_btn.pack(side='left')
         self.open_btn = ctk.CTkButton(links, text="Exophase ↗", width=100, command=self.open_exophase, **small)
-        self.open_btn.pack(side='left', padx=(6, 0))
+        self.open_btn.pack(side='left')
+        self.psnp_btn = ctk.CTkButton(links, text="PSNProfiles ↗", width=120, command=self.open_psnprofiles, **small)
+        self.psnp_btn.pack(side='left', padx=(6, 0))
+        ctk.CTkLabel(box, text="PSNProfiles-Link (optional)", font=theme.SMALL_BOLD, text_color=theme.MUTED,
+                     anchor='w').pack(fill='x', pady=(10, 0))
+        self.psnp_link = add_context_menu(ctk.CTkEntry(
+            box, placeholder_text="https://psnprofiles.com/trophies/…", **theme.entry_style()))
+        if self.game.get('psnprofiles_link'):
+            self.psnp_link.insert(0, self.game['psnprofiles_link'])
+        self.psnp_link.pack(fill='x')
+        ctk.CTkLabel(box, text="Ist ein Link eingetragen, öffnet das 🏆 auf der Karte immer diese Seite",
+                     font=theme.TINY, text_color=theme.SUBTLE, anchor='w').pack(fill='x')
         self._update_trophy_status()
 
         # Schalter
@@ -205,7 +214,9 @@ class EditDialog(BaseWindow):
         self._update_trophy_status()
 
     def open_psnprofiles(self):
-        webbrowser.open(psnprofiles_url(self.game))
+        # Link aus dem Feld (auch schon vor dem Speichern), sonst die PSNProfiles-Suche
+        link = self.psnp_link.get().strip()
+        webbrowser.open(link if is_psnprofiles_link(link) else psnprofiles_url({**self.game, 'psnprofiles_link': ''}))
 
     def open_exophase(self):
         url = self._trophy_value('exophase_url')
@@ -218,6 +229,10 @@ class EditDialog(BaseWindow):
 
         if igdb_id and not igdb_id.isdigit():
             self.error.configure(text="Die IGDB-ID muss eine Zahl sein.")
+            return
+        psnp_link = self.psnp_link.get().strip()
+        if psnp_link and not is_psnprofiles_link(psnp_link):
+            self.error.configure(text="Der PSNProfiles-Link muss mit https://psnprofiles.com/ beginnen.")
             return
         if date:
             try:
@@ -233,7 +248,8 @@ class EditDialog(BaseWindow):
 
         fields = dict(display_name=self.display_name.get().strip(), release_date=date,
                       platforms=self.platforms.get().strip(), igdb_id=igdb_id, hyped=self.hyped.get(),
-                      manual_tba=manual_tba, last_known_date=last_known, **self.trophy_fields)
+                      manual_tba=manual_tba, last_known_date=last_known, psnprofiles_link=psnp_link,
+                      **self.trophy_fields)
         if date != self.game.get('release_date'):
             fields['release_window'] = ''   # von Hand ein genaues Datum gesetzt → kein „Q2 2027“ mehr
         self.app.store.update_game(self.uid, **fields)
