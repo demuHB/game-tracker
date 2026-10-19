@@ -73,6 +73,9 @@ class Popup(ctk.CTkToplevel):
 
     def show(self):
         self._position()
+        if self.page != 0:
+            self.page = 0              # immer mit „Mit Datum“ öffnen
+            self._signature = None     # Liste der ersten Seite neu zeichnen
         self.render()
         self.list.ensure_scale()   # nach Monitorwechsel mit neuer Skalierung neu zeichnen
         self._had_focus = False
