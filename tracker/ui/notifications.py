@@ -24,7 +24,7 @@ class NotificationsWindow(BaseWindow):
         self.buttons = ctk.CTkFrame(self, fg_color=theme.SURFACE, corner_radius=0)
         self.buttons.pack(fill='x', side='bottom')
         self.read_btn = ctk.CTkButton(self.buttons, text="✓  Alle als gelesen markieren",
-                                      command=app.store.mark_all_read, **theme.button_style('primary'))
+                                      command=self._mark_all_read, **theme.button_style('primary'))
         self.read_btn.pack(side='right', padx=(6, 20), pady=12)
         self.clear_btn = ctk.CTkButton(self.buttons, text="🗑  Alle löschen", command=self._confirm_clear,
                                        **theme.button_style('ghost'))
@@ -76,6 +76,10 @@ class NotificationsWindow(BaseWindow):
             ts = ''
         ctk.CTkLabel(card, text=ts, font=theme.TINY, text_color=theme.SUBTLE, anchor='w'
                      ).grid(row=2, column=1, sticky='ew', pady=(0, 10))
+
+    def _mark_all_read(self):
+        self.app.store.mark_all_read()
+        self.close()   # öffnet die Spieleliste wieder, falls das Fenster aus ihr heraus geöffnet wurde
 
     def _confirm_clear(self):
         ConfirmDialog(self.app, "Alle Benachrichtigungen löschen?", "Das kann nicht rückgängig gemacht werden.",

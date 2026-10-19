@@ -63,6 +63,7 @@ dann nach Plattform. Wird eine Liste brauchbar, kommt eine zweite Meldung („Tr
 Vorläufige Listen haben ein blasses 🏆. Hinweis: Exophase zeigt Listen fast immer auf Englisch.
 Ein Klick auf 🏆 öffnet die gefundene Liste auf **Exophase**. Hast du die Liste auf **PSNProfiles** gefunden,
 trag den Link im Bearbeiten-Dialog unter „PSNProfiles-Link“ ein – dann öffnet 🏆 immer diese Seite (App und PWA).
+Ein **Rechtsklick** auf 🏆 in der Spieleliste sucht das Spiel direkt auf PSNProfiles.
 PSNProfiles selbst kann die App nicht automatisch abfragen – die Seite blockt automatische Abrufe per Cloudflare.
 Im Bearbeiten-Dialog: **Jetzt prüfen**, **Falscher Treffer** (ignoriert den Treffer), **↗** öffnet die Liste auf Exophase.
 

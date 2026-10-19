@@ -15,7 +15,7 @@ from collections import Counter
 
 from ..models import days_between, days_until, is_tba, platform_list, release_year, short_platform, title
 from . import theme
-from ..trophies import trophy_link
+from ..trophies import psnprofiles_url, trophy_link
 from .widgets import SmoothWheel, countdown_info
 
 COVER = (46, 62)          # logische Pixel
@@ -64,6 +64,7 @@ class GameList(SmoothWheel, tkinter.Frame):
         self.canvas.bind('<Motion>', self._on_motion)
         self.canvas.bind('<Leave>', lambda e: self._set_hover(None))
         self.canvas.bind('<Button-1>', self._on_click)
+        self.canvas.bind('<Button-3>', self._on_right_click)
 
     # ------------------------------------------------------------- öffentlich
     def set_games(self, games, with_gaps, empty_text, by_year=False):
@@ -345,3 +346,10 @@ class GameList(SmoothWheel, tkinter.Frame):
         uid = next((t[5:] for t in tags if t.startswith('card:')), None)
         if uid:
             self.on_open(uid)
+
+    def _on_right_click(self, event):
+        """Rechtsklick aufs 🏆: das Spiel auf PSNProfiles suchen (unabhängig vom hinterlegten Link)."""
+        link = next((t for t in self._tags_at(event) if t.startswith('link:')), None)
+        game = next((g for g in self._games if link and g['uid'] == link[5:]), None)
+        if game:
+            self.on_link(psnprofiles_url({**game, 'psnprofiles_link': ''}))
